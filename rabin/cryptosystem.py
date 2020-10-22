@@ -3,8 +3,7 @@ from typing import Optional
 from rabin.dto import RabinPublicKey, RabinCryptoKey
 from rabin.padding.copy_bits_strategy import CopyBitsStrategy
 from rabin.padding.padding_strategy import PaddingStrategy
-from rabin.prime import generate_rabin_key
-from rabin.utils import euklids_algorithm
+from rabin.prime import generate_rabin_key, euklids_algorithm
 
 
 class RabinCryptosystem:
