@@ -4,9 +4,9 @@ from typing import Callable
 from Crypto.Util.number import getRandomNBitInteger
 
 from rabin.crypto_configuration import MAX_ENCRYPTED_BYTES
+from rabin.cryptosystem import RabinCryptosystem
 from rabin.dto import RabinCryptoKey
 from rabin.padding.append_bits_strategy import AppendBitsStrategy
-from rabin.rabin import RabinCryptosystem
 
 TEST_ROUNDS = 100
 

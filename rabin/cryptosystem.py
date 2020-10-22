@@ -6,8 +6,6 @@ from rabin.padding.padding_strategy import PaddingStrategy
 from rabin.prime import generate_rabin_key
 from rabin.utils import euklids_algorithm
 
-ps: PaddingStrategy = AppendBitsStrategy()
-
 
 class RabinCryptosystem:
     def __init__(self, ps: Optional[PaddingStrategy] = None):
