@@ -16,6 +16,10 @@ class RabinCryptosystem:
         Encrypts given plaintext.
         """
         plaintext = self.ps.pad_plaintext(plaintext)
+        # ensure that plaintext is smaller then n
+        if plaintext > pk.n:
+            raise ValueError('Padded plaintext was bigger then public key N! '
+                             'Can not encrypt!')
         # m^2 mod n
         return pow(plaintext, 2, pk.n)
 

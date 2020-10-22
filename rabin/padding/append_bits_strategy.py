@@ -19,11 +19,10 @@ class AppendBitsStrategy(PaddingStrategy):
         # convert to a binary string (b'0101')
         binary_string = bin(plaintext)
         # check if the binary string has enough bites
-        # -2 is here because the string contains "0b" literal
-        if len(binary_string) - 2 < self._padding_bits:
+        if plaintext.bit_length() < self._padding_bits:
             raise ValueError(f'It is not possible to pad numbers '
                              f'that have less then {self._padding_bits}, '
-                             f'but {len(binary_string) - 2} was given!')
+                             f'but {plaintext.bit_length()} was given!')
         # pad the last _padding_bits bits to the end
         output = binary_string + binary_string[-self._padding_bits:]
         # convert back to integer

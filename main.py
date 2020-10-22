@@ -19,8 +19,9 @@ def test_with_rounds(rounds: int, rabin: RabinCryptosystem = None):
 
     for i in range(rounds):
         # test_once(rd.randint(2 ** 15, key.public.n), key=key)
-        # minimal number has 16 bites, maximal must be smaller then N
-        test_once(getRandomNBitInteger(rd.randint(16, MAX_ENCRYPTED_BYTES)), key=key)
+        # minimal number has 16 bites, maximal must be smaller then N - 16
+        # (because 16 bits are used as padding in AppendBitsStrategy)
+        test_once(getRandomNBitInteger(rd.randint(16, MAX_ENCRYPTED_BYTES - 16)), key=key)
 
         if i % (rounds / 10) == 0:
             print(f'Test {100 * i // rounds}/100')
@@ -44,5 +45,6 @@ if __name__ == '__main__':
     try:
         print('Testing: AppendBitsStrategy')
         test_with_rounds(TEST_ROUNDS, rabin=RabinCryptosystem(AppendBitsStrategy()))
-    except ValueError:
+    except ValueError as ve:
         print('AppendBitsStrategy failed!')
+        print(ve)
