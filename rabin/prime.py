@@ -12,7 +12,7 @@ def euklids_algorithm(a: int, b: int) -> Tuple[int, int, int]:
     >>> a, b = 3, 13
     >>> gcd, ax, by = euklids_algorithm(a, b)
     >>> gcd == ax*a + by*b
-    >>> True
+    True
     """
     if a == 0:
         return b, 0, 1
