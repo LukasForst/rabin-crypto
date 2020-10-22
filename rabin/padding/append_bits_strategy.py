@@ -14,6 +14,10 @@ class AppendBitsStrategy(PaddingStrategy):
     The "padding_bits" parameter also specifies the robustness
     of the algorithm in a way, that more bits used means that the padding
     is more robust and the probability of wrong choice of the result is lower.
+
+    Probability of choosing wrong result is 1/2^(padding_bits + 1).
+
+    The benchmarks show that "padding_bits" should be at least 16.
     """
 
     def __init__(self, padding_bits: int = 16):

@@ -8,31 +8,24 @@ from rabin.cryptosystem import RabinCryptosystem
 from rabin.dto import RabinCryptoKey
 from rabin.padding.append_bits_strategy import AppendBitsStrategy
 
-TEST_ROUNDS = 100
-
 
 def test_with_rounds(rounds: int,
                      test_number_generator: Callable,
-                     rabin: RabinCryptosystem = None):
-    rabin = rabin if rabin else RabinCryptosystem()
-
+                     rabin: RabinCryptosystem):
     print('Generating key...')
     key = rabin.generate_key()
     print('Key generated!')
 
     for i in range(rounds):
-        test_once(test_number_generator(), key=key)
+        test_once(test_number_generator(), rabin=rabin, key=key)
 
         if i % (rounds / 10) == 0:
-            print(f'Test {100 * i // rounds}/100')
+            print(f'Test {100 * i // rounds}% of {rounds} OK')
 
-    print(f'Test 100/100')
+    print(f'Test 100% of {rounds} OK')
 
 
-def test_once(plaintext: int, rabin: RabinCryptosystem = None, key: RabinCryptoKey = None):
-    rabin = rabin if rabin else RabinCryptosystem()
-    key = key if key else rabin.generate_key()
-
+def test_once(plaintext: int, rabin: RabinCryptosystem, key: RabinCryptoKey):
     ciphertext = rabin.encrypt(key.public, plaintext)
     decrypted = rabin.decrypt(key, ciphertext)
 
@@ -41,12 +34,13 @@ def test_once(plaintext: int, rabin: RabinCryptosystem = None, key: RabinCryptoK
 
 
 if __name__ == '__main__':
+    test_rounds = 1000
     # test append bits strategy
     try:
         padding_size = 16
         print(f'Testing: AppendBitsStrategy with size {padding_size}')
-        test_with_rounds(TEST_ROUNDS,
-                         rabin=RabinCryptosystem(AppendBitsStrategy(padding_size)),
+        test_with_rounds(test_rounds,
+                         rabin=RabinCryptosystem(AppendBitsStrategy(padding_bits=padding_size)),
                          # minimal number has to be at least padding_size big,
                          # maximal must be smaller then N - padding_size
                          # (because padding_size bits are used as padding in the padding strategy)
