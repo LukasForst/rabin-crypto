@@ -3,7 +3,7 @@ from typing import Callable
 
 from Crypto.Util.number import getRandomNBitInteger
 
-from rabin.crypto_configuration import MAX_ENCRYPTED_BYTES
+from rabin.crypto_configuration import MAX_ENCRYPTED_BITS
 from rabin.cryptosystem import RabinCryptosystem
 from rabin.dto import RabinCryptoKey
 from rabin.padding.copy_bits_strategy import CopyBitsStrategy
@@ -42,7 +42,7 @@ def test_copy_bits_strategy(test_rounds: int, padding_size: int):
                      # maximal must be smaller then N - padding_size
                      # (because padding_size bits are used as padding in the padding strategy)
                      test_number_generator=lambda: getRandomNBitInteger(
-                         rd.randint(padding_size, MAX_ENCRYPTED_BYTES - padding_size))
+                         rd.randint(padding_size, MAX_ENCRYPTED_BITS - padding_size))
                      )
 
 
@@ -54,7 +54,7 @@ def test_nonce_bits_strategy(test_rounds: int, nonce_size: int):
                      # maximal number must be smaller then N - nonce_size
                      # (because padding_size bits are used as padding in the padding strategy)
                      test_number_generator=lambda: getRandomNBitInteger(
-                         rd.randint(1, MAX_ENCRYPTED_BYTES - nonce_size))
+                         rd.randint(1, MAX_ENCRYPTED_BITS - nonce_size))
                      )
 
 
