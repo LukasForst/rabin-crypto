@@ -5,4 +5,5 @@ dependencies:
   - numpy=1.19.1
   - ipython=7.18.1
   - pip:
-    - pycryptodome==3.9.8
+      - pycryptodome==3.9.8
+    - docetest
