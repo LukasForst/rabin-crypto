@@ -47,6 +47,8 @@ class CopyBitsStrategy(PaddingStrategy):
         return int(binary_string, 2)
 
     def _choose_candidate(self, candidates: List[int]) -> int:
+        matching_candidates = []
+
         for i in candidates:
             binary = bin(i)
             # take the last _padding_bits
@@ -54,6 +56,10 @@ class CopyBitsStrategy(PaddingStrategy):
             # remove the last _padding_bits
             binary = binary[:-self._padding_bits]
             if append == binary[-self._padding_bits:]:
-                return i
+                matching_candidates.append(i)
 
-        raise ValueError('It was not possible to determine candidate!')
+        if len(matching_candidates) != 1:
+            raise ValueError('It was not possible to determine candidate! '
+                             f'There were {len(matching_candidates)} plaintext candidates!')
+
+        return matching_candidates[0]
