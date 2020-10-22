@@ -43,12 +43,16 @@ def test_once(plaintext: int, rabin: RabinCryptosystem = None, key: RabinCryptoK
 if __name__ == '__main__':
     # test append bits strategy
     try:
-        print('Testing: AppendBitsStrategy')
+        padding_size = 16
+        print(f'Testing: AppendBitsStrategy with size {padding_size}')
         test_with_rounds(TEST_ROUNDS,
-                         rabin=RabinCryptosystem(AppendBitsStrategy()),
-                         # minimal number has to be 16 bites, maximal must be smaller then N - 16
-                         # (because 16 bits are used as padding in the padding strategy)
-                         test_number_generator=lambda: getRandomNBitInteger(rd.randint(16, MAX_ENCRYPTED_BYTES - 16)))
+                         rabin=RabinCryptosystem(AppendBitsStrategy(padding_size)),
+                         # minimal number has to be at least padding_size big,
+                         # maximal must be smaller then N - padding_size
+                         # (because padding_size bits are used as padding in the padding strategy)
+                         test_number_generator=lambda: getRandomNBitInteger(
+                             rd.randint(padding_size, MAX_ENCRYPTED_BYTES - padding_size))
+                         )
     except ValueError as ve:
         print('AppendBitsStrategy failed!')
         print(ve)
