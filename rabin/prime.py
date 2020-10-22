@@ -5,6 +5,9 @@ from rabin.dto import RabinCryptoKey, RabinSecretKey, RabinPublicKey
 
 
 def generate_rabin_key(bit_len: int = PRIME_LENGTH_BITS) -> RabinCryptoKey:
+    """
+    Securely generate whole key material for Rabin cryptosystem.
+    """
     p, q = _get_private_key_prime(bit_len), _get_private_key_prime(bit_len)
     return RabinCryptoKey(
         private=RabinSecretKey(p=p, q=q),
@@ -14,6 +17,7 @@ def generate_rabin_key(bit_len: int = PRIME_LENGTH_BITS) -> RabinCryptoKey:
 
 def _get_private_key_prime(bit_len: int) -> int:
     while True:
+        # cryptographically secure way how to generate prime number
         p = number.getPrime(bit_len)
         if p % 4 == 3:
             return p
