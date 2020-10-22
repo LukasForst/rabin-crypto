@@ -35,35 +35,27 @@ def test_once(plaintext: int, rabin: RabinCryptosystem, key: RabinCryptoKey):
 
 
 def test_copy_bits_strategy(test_rounds: int, padding_size: int):
-    try:
-        print(f'Testing: CopyBitsStrategy with size {padding_size}')
-        test_with_rounds(test_rounds,
-                         rabin=RabinCryptosystem(CopyBitsStrategy(padding_bits=padding_size)),
-                         # minimal number has to be at least padding_size big,
-                         # maximal must be smaller then N - padding_size
-                         # (because padding_size bits are used as padding in the padding strategy)
-                         test_number_generator=lambda: getRandomNBitInteger(
-                             rd.randint(padding_size, MAX_ENCRYPTED_BYTES - padding_size))
-                         )
-    except ValueError as ve:
-        print('CopyBitsStrategy failed!')
-        raise ve
+    print(f'Testing: CopyBitsStrategy with size {padding_size}')
+    test_with_rounds(test_rounds,
+                     rabin=RabinCryptosystem(CopyBitsStrategy(padding_bits=padding_size)),
+                     # minimal number has to be at least padding_size big,
+                     # maximal must be smaller then N - padding_size
+                     # (because padding_size bits are used as padding in the padding strategy)
+                     test_number_generator=lambda: getRandomNBitInteger(
+                         rd.randint(padding_size, MAX_ENCRYPTED_BYTES - padding_size))
+                     )
 
 
 def test_nonce_bits_strategy(test_rounds: int, nonce_size: int):
-    try:
-        print(f'Testing: NonceBitsStrategy with size {nonce_size}')
-        nonce = getRandomNBitInteger(nonce_size)
-        test_with_rounds(test_rounds,
-                         rabin=RabinCryptosystem(NonceBitsStrategy(nonce=nonce)),
-                         # maximal number must be smaller then N - nonce_size
-                         # (because padding_size bits are used as padding in the padding strategy)
-                         test_number_generator=lambda: getRandomNBitInteger(
-                             rd.randint(1, MAX_ENCRYPTED_BYTES - nonce_size))
-                         )
-    except ValueError as ve:
-        print('NonceBitsStrategy failed!')
-        raise ve
+    print(f'Testing: NonceBitsStrategy with size {nonce_size}')
+    nonce = getRandomNBitInteger(nonce_size)
+    test_with_rounds(test_rounds,
+                     rabin=RabinCryptosystem(NonceBitsStrategy(nonce=nonce)),
+                     # maximal number must be smaller then N - nonce_size
+                     # (because padding_size bits are used as padding in the padding strategy)
+                     test_number_generator=lambda: getRandomNBitInteger(
+                         rd.randint(1, MAX_ENCRYPTED_BYTES - nonce_size))
+                     )
 
 
 if __name__ == '__main__':
