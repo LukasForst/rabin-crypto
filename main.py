@@ -1,4 +1,5 @@
 import random as rd
+from typing import Callable
 
 from Crypto.Util.number import getRandomNBitInteger
 
@@ -10,7 +11,9 @@ from rabin.rabin import RabinCryptosystem
 TEST_ROUNDS = 100
 
 
-def test_with_rounds(rounds: int, rabin: RabinCryptosystem = None):
+def test_with_rounds(rounds: int,
+                     test_number_generator: Callable,
+                     rabin: RabinCryptosystem = None):
     rabin = rabin if rabin else RabinCryptosystem()
 
     print('Generating key...')
@@ -18,10 +21,7 @@ def test_with_rounds(rounds: int, rabin: RabinCryptosystem = None):
     print('Key generated!')
 
     for i in range(rounds):
-        # test_once(rd.randint(2 ** 15, key.public.n), key=key)
-        # minimal number has 16 bites, maximal must be smaller then N - 16
-        # (because 16 bits are used as padding in AppendBitsStrategy)
-        test_once(getRandomNBitInteger(rd.randint(16, MAX_ENCRYPTED_BYTES - 16)), key=key)
+        test_once(test_number_generator(), key=key)
 
         if i % (rounds / 10) == 0:
             print(f'Test {100 * i // rounds}/100')
@@ -44,7 +44,11 @@ if __name__ == '__main__':
     # test append bits strategy
     try:
         print('Testing: AppendBitsStrategy')
-        test_with_rounds(TEST_ROUNDS, rabin=RabinCryptosystem(AppendBitsStrategy()))
+        test_with_rounds(TEST_ROUNDS,
+                         rabin=RabinCryptosystem(AppendBitsStrategy()),
+                         # minimal number has to be 16 bites, maximal must be smaller then N - 16
+                         # (because 16 bits are used as padding in the padding strategy)
+                         test_number_generator=lambda: getRandomNBitInteger(rd.randint(16, MAX_ENCRYPTED_BYTES - 16)))
     except ValueError as ve:
         print('AppendBitsStrategy failed!')
         print(ve)

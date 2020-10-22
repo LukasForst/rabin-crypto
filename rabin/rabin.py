@@ -1,3 +1,5 @@
+from typing import Optional
+
 from rabin.dto import RabinPublicKey, RabinCryptoKey
 from rabin.padding.append_bits_strategy import AppendBitsStrategy
 from rabin.padding.padding_strategy import PaddingStrategy
@@ -8,7 +10,7 @@ ps: PaddingStrategy = AppendBitsStrategy()
 
 
 class RabinCryptosystem:
-    def __init__(self, ps: PaddingStrategy = None):
+    def __init__(self, ps: Optional[PaddingStrategy] = None):
         self.ps = ps if ps else AppendBitsStrategy()
 
     def encrypt(self, pk: RabinPublicKey, plaintext) -> int:
