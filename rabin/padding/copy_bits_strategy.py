@@ -3,7 +3,7 @@ from typing import List
 from rabin.padding.padding_strategy import PaddingStrategy
 
 
-class AppendBitsStrategy(PaddingStrategy):
+class CopyBitsStrategy(PaddingStrategy):
     """
     Strategy when "padding_bits" from the end of the number
     are appended to the end of the number.
