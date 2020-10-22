@@ -4,14 +4,17 @@ from Crypto.Util.number import getRandomNBitInteger
 
 from rabin.crypto_configuration import MAX_ENCRYPTED_BYTES
 from rabin.dto import RabinCryptoKey
-from rabin.rabin import generate_key, encrypt, decrypt
+from rabin.padding.append_bits_strategy import AppendBitsStrategy
+from rabin.rabin import RabinCryptosystem
 
 TEST_ROUNDS = 100
 
 
-def test_with_rounds(rounds: int):
+def test_with_rounds(rounds: int, rabin: RabinCryptosystem = None):
+    rabin = rabin if rabin else RabinCryptosystem()
+
     print('Generating key...')
-    key = generate_key()
+    key = rabin.generate_key()
     print('Key generated!')
 
     for i in range(rounds):
@@ -25,18 +28,21 @@ def test_with_rounds(rounds: int):
     print(f'Test 100/100')
 
 
-def test_once(plaintext: int, key: RabinCryptoKey = None):
-    key = key if key else generate_key()
+def test_once(plaintext: int, rabin: RabinCryptosystem = None, key: RabinCryptoKey = None):
+    rabin = rabin if rabin else RabinCryptosystem()
+    key = key if key else rabin.generate_key()
 
-    ciphertext = encrypt(key.public, plaintext)
-    decrypted = decrypt(key, ciphertext)
+    ciphertext = rabin.encrypt(key.public, plaintext)
+    decrypted = rabin.decrypt(key, ciphertext)
 
     if plaintext != decrypted:
         raise ValueError(f'Plaintext {plaintext} does not match {decrypted}.')
 
 
 if __name__ == '__main__':
-    test_with_rounds(TEST_ROUNDS)
-    # test_once(2 ** 15)
-
-    print('done')
+    # test append bits strategy
+    try:
+        print('Testing: AppendBitsStrategy')
+        test_with_rounds(TEST_ROUNDS, rabin=RabinCryptosystem(AppendBitsStrategy()))
+    except ValueError:
+        print('AppendBitsStrategy failed!')

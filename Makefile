@@ -14,3 +14,6 @@ conda-update:
 
 conda-activate:
 	conda activate $(CONDA_ENV)
+
+test:
+	python main.py

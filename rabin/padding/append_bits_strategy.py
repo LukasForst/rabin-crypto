@@ -4,6 +4,13 @@ from rabin.padding.padding_strategy import PaddingStrategy
 
 
 class AppendBitsStrategy(PaddingStrategy):
+    """
+    Strategy when "padding_bits" from the end of the number
+    are appended to the end of the number.
+
+    The issue with this is, that it works only with the numbers that
+    are at least "padding_bits" long.
+    """
 
     def __init__(self, padding_bits: int = 16):
         self._padding_bits = padding_bits
