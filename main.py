@@ -22,8 +22,12 @@ def test_with_rounds(rounds: int):
         if i % (rounds / 10) == 0:
             print(f'Test {100 * i // rounds}/100')
 
+    print(f'Test 100/100')
 
-def test_once(plaintext: int, key: RabinCryptoKey = generate_key()):
+
+def test_once(plaintext: int, key: RabinCryptoKey = None):
+    key = key if key else generate_key()
+
     ciphertext = encrypt(key.public, plaintext)
     decrypted = decrypt(key, ciphertext)
 

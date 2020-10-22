@@ -3,7 +3,6 @@ dependencies:
   - python=3.8.3
   - pip=20.1.1
   - numpy=1.19.1
-  - ipython=7.18.1
+  - ipython=7.18.1 # used for testing, not needed on prod
   - pip:
       - pycryptodome==3.9.8
-    - docetest
