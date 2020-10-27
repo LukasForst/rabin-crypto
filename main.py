@@ -4,7 +4,7 @@ from typing import Callable
 from Crypto.Util.number import getRandomNBitInteger
 
 from rabin.crypto_configuration import MAX_ENCRYPTED_BITS
-from rabin.cryptosystem import RabinCryptosystem
+from rabin.cryptosystem import IntegerRabinCryptosystem
 from rabin.dto import RabinCryptoKey
 from rabin.padding.copy_bits_strategy import CopyBitsStrategy
 from rabin.padding.nonce_bits_strategy import NonceBitsStrategy
@@ -12,7 +12,7 @@ from rabin.padding.nonce_bits_strategy import NonceBitsStrategy
 
 def test_with_rounds(rounds: int,
                      test_number_generator: Callable,
-                     rabin: RabinCryptosystem):
+                     rabin: IntegerRabinCryptosystem):
     print('Generating key...')
     key = rabin.generate_key()
     print('Key generated!')
@@ -26,7 +26,7 @@ def test_with_rounds(rounds: int,
     print(f'Test 100% of {rounds} OK')
 
 
-def test_once(plaintext: int, rabin: RabinCryptosystem, key: RabinCryptoKey):
+def test_once(plaintext: int, rabin: IntegerRabinCryptosystem, key: RabinCryptoKey):
     ciphertext = rabin.encrypt(key.public, plaintext)
     decrypted = rabin.decrypt(key, ciphertext)
 
@@ -37,7 +37,7 @@ def test_once(plaintext: int, rabin: RabinCryptosystem, key: RabinCryptoKey):
 def test_copy_bits_strategy(test_rounds: int, padding_size: int):
     print(f'Testing: CopyBitsStrategy with size {padding_size}')
     test_with_rounds(test_rounds,
-                     rabin=RabinCryptosystem(CopyBitsStrategy(padding_bits=padding_size)),
+                     rabin=IntegerRabinCryptosystem(CopyBitsStrategy(padding_bits=padding_size)),
                      # minimal number has to be at least padding_size big,
                      # maximal must be smaller then N - padding_size
                      # (because padding_size bits are used as padding in the padding strategy)
@@ -50,7 +50,7 @@ def test_nonce_bits_strategy(test_rounds: int, nonce_size: int):
     print(f'Testing: NonceBitsStrategy with size {nonce_size}')
     nonce = getRandomNBitInteger(nonce_size)
     test_with_rounds(test_rounds,
-                     rabin=RabinCryptosystem(NonceBitsStrategy(nonce=nonce)),
+                     rabin=IntegerRabinCryptosystem(NonceBitsStrategy(nonce=nonce)),
                      # maximal number must be smaller then N - nonce_size
                      # (because padding_size bits are used as padding in the padding strategy)
                      test_number_generator=lambda: getRandomNBitInteger(
@@ -59,5 +59,5 @@ def test_nonce_bits_strategy(test_rounds: int, nonce_size: int):
 
 
 if __name__ == '__main__':
-    # test_copy_bits_strategy(test_rounds=1000, padding_size=16)
-    test_nonce_bits_strategy(test_rounds=1000, nonce_size=16)
+    test_copy_bits_strategy(test_rounds=300, padding_size=16)
+    test_nonce_bits_strategy(test_rounds=300, nonce_size=16)

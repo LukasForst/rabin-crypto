@@ -18,6 +18,9 @@ class CopyBitsStrategy(PaddingStrategy):
     Probability of choosing wrong result is 1/2^(padding_bits + 1).
 
     The benchmarks show that "padding_bits" should be at least 16.
+
+    The original idea taken from the duckbill360 -
+    https://github.com/duckbill360/Rabin-Public-Key-Cryptosystem/blob/master/Rabin.py
     """
 
     def __init__(self, padding_bits: int = 16):

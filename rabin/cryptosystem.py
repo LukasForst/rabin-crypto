@@ -6,11 +6,11 @@ from rabin.padding.padding_strategy import PaddingStrategy
 from rabin.prime import generate_rabin_key, euklids_algorithm
 
 
-class RabinCryptosystem:
+class IntegerRabinCryptosystem:
     def __init__(self, ps: Optional[PaddingStrategy] = None):
         self.ps = ps if ps else CopyBitsStrategy()
 
-    def encrypt(self, pk: RabinPublicKey, plaintext) -> int:
+    def encrypt(self, pk: RabinPublicKey, plaintext: int) -> int:
         """
         Encrypts given plaintext.
         """
