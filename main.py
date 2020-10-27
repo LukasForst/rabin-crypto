@@ -4,19 +4,25 @@ from typing import Callable
 from Crypto.Util.number import getRandomNBitInteger
 
 from rabin.crypto_configuration import MAX_ENCRYPTED_BITS
-from rabin.cryptosystem import IntegerRabinCryptosystem
+from rabin.cryptosystem.base import RabinCryptosystem
+from rabin.cryptosystem.file import FileRabinCryptosystem
+from rabin.cryptosystem.integer import IntegerRabinCryptosystem
 from rabin.dto import RabinCryptoKey
 from rabin.padding.copy_bits_strategy import CopyBitsStrategy
 from rabin.padding.nonce_bits_strategy import NonceBitsStrategy
 
 
-def test_with_rounds(rounds: int,
-                     test_number_generator: Callable,
-                     rabin: IntegerRabinCryptosystem):
+def generate_key(rabin: RabinCryptosystem):
     print('Generating key...')
     key = rabin.generate_key()
     print('Key generated!')
+    return key
 
+
+def test_with_rounds(rounds: int,
+                     test_number_generator: Callable,
+                     rabin: IntegerRabinCryptosystem):
+    key = generate_key(rabin)
     for i in range(rounds):
         test_once(test_number_generator(), rabin=rabin, key=key)
 
@@ -58,6 +64,24 @@ def test_nonce_bits_strategy(test_rounds: int, nonce_size: int):
                      )
 
 
+def test_file_write_read(nonce_size: int, test_file_path: str):
+    nonce = getRandomNBitInteger(nonce_size)
+    cs = FileRabinCryptosystem(NonceBitsStrategy(nonce=nonce))
+    key = generate_key(cs)
+
+    encrypted = cs.encrypt(key.public, test_file_path)
+    decrypted = cs.decrypt(key, encrypted)
+
+    with open(test_file_path, 'rb') as test_file:
+        original = test_file.read()
+    with open(decrypted, 'rb') as decrypted_file:
+        produced = decrypted_file.read()
+
+    if original != produced:
+        raise ValueError('Original is different then produced!')
+
+
 if __name__ == '__main__':
-    test_copy_bits_strategy(test_rounds=300, padding_size=16)
-    test_nonce_bits_strategy(test_rounds=300, nonce_size=16)
+    # test_copy_bits_strategy(test_rounds=300, padding_size=16)
+    # test_nonce_bits_strategy(test_rounds=300, nonce_size=16)
+    test_file_write_read(nonce_size=16, test_file_path='README.md')

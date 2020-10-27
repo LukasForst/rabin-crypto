@@ -1,20 +1,20 @@
 from typing import Optional
 
+from rabin.cryptosystem.base import RabinCryptosystem
 from rabin.dto import RabinPublicKey, RabinCryptoKey
-from rabin.padding.copy_bits_strategy import CopyBitsStrategy
 from rabin.padding.padding_strategy import PaddingStrategy
-from rabin.prime import generate_rabin_key, euklids_algorithm
+from rabin.prime import euklids_algorithm
 
 
-class IntegerRabinCryptosystem:
+class IntegerRabinCryptosystem(RabinCryptosystem):
     def __init__(self, ps: Optional[PaddingStrategy] = None):
-        self.ps = ps if ps else CopyBitsStrategy()
+        super().__init__(ps)
 
     def encrypt(self, pk: RabinPublicKey, plaintext: int) -> int:
         """
         Encrypts given plaintext.
         """
-        plaintext = self.ps.pad_plaintext(plaintext)
+        plaintext = self._ps.pad_plaintext(plaintext)
         # ensure that plaintext is smaller then n
         if plaintext > pk.n:
             raise ValueError('Padded plaintext was bigger then public key N! '
@@ -39,14 +39,7 @@ class IntegerRabinCryptosystem:
         r3 = (yp * p * mq - yq * q * mp) % n
         r4 = n - r3
 
-        return self.ps.extract_plaintext([r1, r2, r3, r4])
-
-    @staticmethod
-    def generate_key() -> RabinCryptoKey:
-        """
-        Generates key material for the Rabin.
-        """
-        return generate_rabin_key()
+        return self._ps.extract_plaintext([r1, r2, r3, r4])
 
     @staticmethod
     def _square_root_dec(p: int, c: int) -> int:
