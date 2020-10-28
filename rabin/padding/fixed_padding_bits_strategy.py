@@ -3,23 +3,23 @@ from typing import List
 from rabin.padding.padding_strategy import PaddingStrategy
 
 
-class NonceBitsStrategy(PaddingStrategy):
+class FixedPaddingBitsStrategy(PaddingStrategy):
     """
-    Uses given nonce as padding for the numbers.
+    Uses given padding as padding for the numbers.
 
-    The benchmarks show that the nonce should be at least 16 bits big.
+    The benchmarks show that the padding should be at least 16 bits big.
     """
 
-    def __init__(self, nonce: int):
-        self.nonce = nonce
-        self._nonce_bits = bin(nonce)[2:]
-        self._nonce_bits_size = len(self._nonce_bits)
+    def __init__(self, padding: int):
+        self.padding = padding
+        self._padding_bits = bin(padding)[2:]
+        self._padding_bits_size = len(self._padding_bits)
 
     def pad_plaintext(self, plaintext: int) -> int:
         # convert to a binary string (b'0101')
         binary_plaintext = bin(plaintext)
-        # pad the last nonce to the end
-        output = binary_plaintext + self._nonce_bits
+        # pad the last padding to the end
+        output = binary_plaintext + self._padding_bits
         # convert back to integer
         return int(output, 2)
 
@@ -29,7 +29,7 @@ class NonceBitsStrategy(PaddingStrategy):
         # convert to a binary string (b'0101')
         binary_string = bin(padded_plaintext)
         # remove padding
-        binary_string = binary_string[:-self._nonce_bits_size]
+        binary_string = binary_string[:-self._padding_bits_size]
         # convert back to integer
         return int(binary_string, 2)
 
@@ -37,9 +37,9 @@ class NonceBitsStrategy(PaddingStrategy):
         matching_candidates = []
         for i in candidates:
             binary = bin(i)
-            # take the last _nonce_bits_size
-            nonce = binary[-self._nonce_bits_size:]
-            if nonce == self._nonce_bits:
+            # take the last _padding_bits_size
+            nonce = binary[-self._padding_bits_size:]
+            if nonce == self._padding_bits:
                 matching_candidates.append(i)
 
         if len(matching_candidates) != 1:

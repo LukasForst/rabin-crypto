@@ -1,9 +1,10 @@
 from typing import Optional, BinaryIO
 
+from rabin.crypto_configuration import PLAINTEXT_BLOCK_SIZE_BYTES, CIPHERTEXT_BLOCK_SIZE_BYTES
 from rabin.cryptosystem.base import RabinCryptosystem
 from rabin.cryptosystem.integer import IntegerRabinCryptosystem
 from rabin.dto import RabinPublicKey, RabinCryptoKey
-from rabin.padding.nonce_bits_strategy import NonceBitsStrategy
+from rabin.padding.fixed_padding_bits_strategy import FixedPaddingBitsStrategy
 from rabin.padding.padding_strategy import PaddingStrategy
 
 
@@ -19,13 +20,13 @@ class FileRabinCryptosystem(RabinCryptosystem):
         with open(plaintext_file, 'rb') as plaintext_file:
             with open(encrypted_file_path, 'wb') as encrypted_file:
                 # write padding to the encrypted file as a header
-                if type(self._ps) == NonceBitsStrategy:
-                    encrypted_file.write(self._int_to_bytes(self._ps.nonce))
+                if type(self._ps) == FixedPaddingBitsStrategy:
+                    encrypted_file.write(self._int_to_bytes(self._ps.padding))
                     encrypted_file.write(b'\n')
 
                 cs = IntegerRabinCryptosystem(self._ps)
 
-                plaintext_bytes = plaintext_file.read(256)
+                plaintext_bytes = plaintext_file.read(PLAINTEXT_BLOCK_SIZE_BYTES)
                 while plaintext_bytes:
                     # read bytes and convert them as big endian to int
                     plaintext = self._bytes_to_int(plaintext_bytes)
@@ -34,7 +35,7 @@ class FileRabinCryptosystem(RabinCryptosystem):
                     # write it in bytes to the file
                     encrypted_file.write(self._int_to_bytes(ciphertext))
                     # read next bytes
-                    plaintext_bytes = plaintext_file.read(256)
+                    plaintext_bytes = plaintext_file.read(PLAINTEXT_BLOCK_SIZE_BYTES)
 
         return encrypted_file_path
 
@@ -45,13 +46,13 @@ class FileRabinCryptosystem(RabinCryptosystem):
         decrypted_file_path = ciphertext_file + '.dec'
         with open(ciphertext_file, 'rb') as encrypted_file:
             with open(decrypted_file_path, 'wb') as decrypted_file:
-                # read header and initialize nonce
-                if type(self._ps) == NonceBitsStrategy:
-                    self._initialize_nonce(encrypted_file)
+                # read header and initialize padding
+                if type(self._ps) == FixedPaddingBitsStrategy:
+                    self._initialize_fixed_padding(encrypted_file)
 
                 cs = IntegerRabinCryptosystem(self._ps)
 
-                ciphertext_bytes = encrypted_file.read(384)
+                ciphertext_bytes = encrypted_file.read(CIPHERTEXT_BLOCK_SIZE_BYTES)
                 while ciphertext_bytes:
                     ciphertext = self._bytes_to_int(ciphertext_bytes)
                     # decrypt block by block
@@ -61,21 +62,21 @@ class FileRabinCryptosystem(RabinCryptosystem):
                     # write the bytes
                     decrypted_file.write(plaintext_bytes)
                     # read next bytes
-                    ciphertext_bytes = encrypted_file.read(384)
+                    ciphertext_bytes = encrypted_file.read(CIPHERTEXT_BLOCK_SIZE_BYTES)
 
         return decrypted_file_path
 
-    def _initialize_nonce(self, ciphertext_file: BinaryIO):
-        nonce_bytes = b''
-        # read first line from the file where the nonce is
+    def _initialize_fixed_padding(self, ciphertext_file: BinaryIO):
+        padding_bytes = b''
+        # read first line from the file where the padding is
         byte = ciphertext_file.read(1)
         while byte and byte != b'\n':
-            nonce_bytes += byte
+            padding_bytes += byte
             byte = ciphertext_file.read(1)
-        # convert nonce to int
-        nonce = self._bytes_to_int(nonce_bytes)
-        # initialise the nonce strategy
-        self._ps = NonceBitsStrategy(nonce)
+        # convert padding to int
+        padding = self._bytes_to_int(padding_bytes)
+        # initialise the padding strategy
+        self._ps = FixedPaddingBitsStrategy(padding)
 
     @staticmethod
     def _int_to_bytes(integer: int) -> bytes:

@@ -6,4 +6,8 @@ PRIME_LENGTH_BITS = 1536
 # m < n and as |n| = |p| + |q|
 MAX_ENCRYPTED_BITS = (PRIME_LENGTH_BITS * 2) - 1
 
-BLOCK_SIZE_BYTES = 256
+# must be smaller then MAX_ENCRYPTED_BITS // 8
+# arbitrary selected as 256 bytes
+PLAINTEXT_BLOCK_SIZE_BYTES = 256
+# encrypting 256 bytes result in 384 cipher text bytes
+CIPHERTEXT_BLOCK_SIZE_BYTES = PLAINTEXT_BLOCK_SIZE_BYTES + 128
