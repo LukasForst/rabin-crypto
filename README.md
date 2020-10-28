@@ -17,7 +17,7 @@ The benchmarks showed that appending `16` bits is enough to distinguish between 
 
 The strategies are implemented in package `rabin.padding`.
 
-#### Padding with bits repetition
+### Padding with bits repetition
 Implemented in [CopyBitsStrategy](rabin/padding/copy_bits_strategy.py), 
 this strategy takes last `X` bits from the original number, copies them and appends them 
 at the end of the number.
@@ -27,7 +27,7 @@ This strategy has a downside that it limits the smallest number the algorithm ca
 as it needs at least `X` bit number.
 On the other hand, it is not necessary to remember the padding.
 
-#### Static padding
+### Static padding
 Implemented in [FixedPaddingBitsStrategy](rabin/padding/fixed_padding_bits_strategy.py), 
 this strategy uses static padding which is appended at the end of the number before the encryption.
 The advantage is that one can encrypt as small number as 1 bit, but needs to remember the padding used.
