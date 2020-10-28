@@ -6,9 +6,35 @@ The Rabin cryptosystem has a property, that it produces four different plaintext
 after the decryption and it is not specified, how to choose the correct one.
 
 ## Disambiguation problem
-TBD
-There are multiple padding strategies implemented in the package `rabin.padding`,
- one can choose the best suiting one.
+We implemented two different strategies solving the disambiguation problem.
+The idea behind all strategies is to append some additional padding, 
+which is then present after the decryption. 
+Then the algorithm verifies which one of the four plaintexts have the correct padding
+and chooses the one with the correct one.
+
+This approach reduces the size of the number that can be encrypted, but it solves the disambiguation problem.
+The benchmarks showed that appending `16` bits is enough to distinguish between the produced plaintexts.
+
+The strategies are implemented in package `rabin.padding`.
+
+#### Padding with bits repetition
+Implemented in [CopyBitsStrategy](rabin/padding/copy_bits_strategy.py), 
+this strategy takes last `X` bits from the original number, copies them and appends them 
+at the end of the number.
+This was inspired by the [following implementation](https://github.com/duckbill360/Rabin-Public-Key-Cryptosystem/blob/master/Rabin.py#L13).
+
+This strategy has a downside that it limits the smallest number the algorithm can encrypt
+as it needs at least `X` bit number.
+On the other hand, it is not necessary to remember the padding.
+
+#### Static padding
+Implemented in [FixedPaddingBitsStrategy](rabin/padding/fixed_padding_bits_strategy.py), 
+this strategy uses static padding which is appended at the end of the number before the encryption.
+The advantage is that one can encrypt as small number as 1 bit, but needs to remember the padding used.
+
+In the class [FileRabinCryptosystem](rabin/cryptosystem/file.py), the problem of remembering the padding
+is solved by prepending the padding at the beginning of the encrypted file.
+During the file decryption, the program reads the padding first and initializes the padding strategy.
 
 
 ## Generating the keys
