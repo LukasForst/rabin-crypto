@@ -7,6 +7,10 @@ from rabin.prime import euklids_algorithm
 
 
 class IntegerRabinCryptosystem(RabinCryptosystem):
+    """
+    Cryptosystem implementation working solely with integers.
+    """
+
     def __init__(self, ps: Optional[PaddingStrategy] = None):
         super().__init__(ps)
 

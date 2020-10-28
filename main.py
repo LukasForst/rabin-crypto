@@ -56,15 +56,15 @@ def test_copy_bits_strategy(test_rounds: int, padding_size: int):
                      )
 
 
-def test_nonce_bits_strategy(test_rounds: int, nonce_size: int):
-    print(f'Testing: FixedPaddingBitsStrategy with size {nonce_size}')
-    nonce = getRandomNBitInteger(nonce_size)
+def test_fixed_padding_bits_strategy(test_rounds: int, padding_size: int):
+    print(f'Testing: FixedPaddingBitsStrategy with size {padding_size}')
+    nonce = getRandomNBitInteger(padding_size)
     test_with_rounds(test_rounds,
                      rabin=IntegerRabinCryptosystem(FixedPaddingBitsStrategy(padding=nonce)),
                      # maximal number must be smaller then N - padding_size
                      # (because padding_size bits are used as padding in the padding strategy)
                      test_number_generator=lambda: getRandomNBitInteger(
-                         rd.randint(1, MAX_ENCRYPTED_BITS - nonce_size))
+                         rd.randint(1, MAX_ENCRYPTED_BITS - padding_size))
                      )
 
 
@@ -126,7 +126,8 @@ def test_generate_random_byte_file(padding_size: int, bytes_number: int):
 
 
 if __name__ == '__main__':
-    # test_copy_bits_strategy(test_rounds=300, padding_size=16)
-    # test_nonce_bits_strategy(test_rounds=300, padding_size=16)
-    # test_file_write_read(padding_size=16, test_file_path='README.md')
-    test_generate_random_byte_file(padding_size=16, bytes_number=1024)
+    test_copy_bits_strategy(test_rounds=300, padding_size=16)
+    test_fixed_padding_bits_strategy(test_rounds=300, padding_size=16)
+    test_file_write_read(padding_size=16, test_file_path='README.md')
+    test_file_megabytes = 10
+    test_generate_random_byte_file(padding_size=16, bytes_number=1024 * test_file_megabytes)

@@ -9,6 +9,10 @@ from rabin.padding.padding_strategy import PaddingStrategy
 
 
 class FileRabinCryptosystem(RabinCryptosystem):
+    """
+    Cryptosystem implementation suitable for encrypting and decrypting files.
+    """
+
     def __init__(self, ps: Optional[PaddingStrategy] = None):
         super().__init__(ps)
 
