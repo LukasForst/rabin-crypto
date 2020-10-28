@@ -1,6 +1,5 @@
 from typing import Optional, BinaryIO
 
-from rabin.crypto_configuration import BLOCK_SIZE_BYTES
 from rabin.cryptosystem.base import RabinCryptosystem
 from rabin.cryptosystem.integer import IntegerRabinCryptosystem
 from rabin.dto import RabinPublicKey, RabinCryptoKey
@@ -26,7 +25,7 @@ class FileRabinCryptosystem(RabinCryptosystem):
 
                 cs = IntegerRabinCryptosystem(self._ps)
 
-                plaintext_bytes = plaintext_file.read(BLOCK_SIZE_BYTES)
+                plaintext_bytes = plaintext_file.read(256)
                 while plaintext_bytes:
                     # read bytes and convert them as big endian to int
                     plaintext = self._bytes_to_int(plaintext_bytes)
@@ -35,7 +34,7 @@ class FileRabinCryptosystem(RabinCryptosystem):
                     # write it in bytes to the file
                     encrypted_file.write(self._int_to_bytes(ciphertext))
                     # read next bytes
-                    plaintext_bytes = plaintext_file.read(BLOCK_SIZE_BYTES)
+                    plaintext_bytes = plaintext_file.read(256)
 
         return encrypted_file_path
 
