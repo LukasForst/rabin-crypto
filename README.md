@@ -2,6 +2,8 @@
 Implementation of Rabin cryptosystem according to [this](https://en.wikipedia.org/wiki/Rabin_cryptosystem) 
 specification.
 
+The code and documentation can be found on the [Github](https://github.com/LukasForst/rabin-crypto/).
+
 The Rabin cryptosystem has a property, that it produces four different plaintexts 
 after the decryption and it is not specified, how to choose the correct one.
 
